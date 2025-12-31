@@ -39,6 +39,24 @@ export default function AboutPage() {
                     </div>
 
                 </div>
+
+                <div style={{ marginTop: '4rem', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'var(--primary)' }}>District at a Glance</h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
+                        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
+                            <div style={{ fontSize: '3rem', fontWeight: '800', color: 'var(--secondary)', marginBottom: '0.5rem' }}>350+</div>
+                            <div style={{ fontSize: '1.1rem', color: 'var(--text-light)' }}>Students Enrolled</div>
+                        </div>
+                        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
+                            <div style={{ fontSize: '3rem', fontWeight: '800', color: 'var(--secondary)', marginBottom: '0.5rem' }}>14:1</div>
+                            <div style={{ fontSize: '1.1rem', color: 'var(--text-light)' }}>Student-Teacher Ratio</div>
+                        </div>
+                        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
+                            <div style={{ fontSize: '3rem', fontWeight: '800', color: 'var(--secondary)', marginBottom: '0.5rem' }}>95%</div>
+                            <div style={{ fontSize: '1.1rem', color: 'var(--text-light)' }}>Graduation Rate</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,0 +1,7 @@
+{
+    "host": "oswayo-valley-sd.turek.in",
+    "applicationId": "S4oeUIpkyN3tPff8hV5Mq",
+    "port": 3000,
+    "https": true,
+    "certificateType": "letsencrypt"
+}
