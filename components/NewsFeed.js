@@ -1,6 +1,6 @@
 import Parser from 'rss-parser';
 
-import { getNews as getPbNews } from '@/lib/pocketbase';
+import { getNews as getPbNews } from '../lib/pocketbase';
 
 async function getNews() {
     // 1. Try fetching from PocketBase CMS
