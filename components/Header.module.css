@@ -1,0 +1,97 @@
+.header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.navContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logoLink {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.logoIcon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+    transition: background-color 0.3s;
+}
+
+.logoText {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-black);
+    letter-spacing: -0.02em;
+}
+
+.desktopNav {
+    display: none;
+    /* Mobile first */
+    align-items: center;
+    gap: 2rem;
+}
+
+.navLink {
+    font-weight: 500;
+    color: var(--gray-800);
+    transition: color 0.2s;
+}
+
+.navLink:hover {
+    color: var(--primary-green);
+}
+
+.mobileToggle {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent-black);
+}
+
+.mobileMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: var(--shadow-md);
+    border-top: 1px solid var(--gray-200);
+}
+
+@media (min-width: 768px) {
+    .desktopNav {
+        display: flex;
+    }
+
+    .mobileToggle {
+        display: none;
+    }
+
+    .mobileMenu {
+        display: none;
+    }
+}
