@@ -1,32 +1,7 @@
-import Parser from 'rss-parser';
-
-import { getNews as getPbNews } from '../app/utils/pocketbase';
-
-async function getNews() {
-    // 1. Try fetching from PocketBase CMS
-    const pbItems = await getPbNews();
-    if (pbItems && pbItems.length > 0) {
-        return pbItems.map(item => ({
-            title: item.title,
-            pubDate: item.created,
-            contentSnippet: item.excerpt || item.content?.substring(0, 160),
-            link: `/news/${item.id}` // Internal link structure
-        }));
-    }
-
-    // 2. Fallback to RSS if CMS is empty
-    const parser = new Parser();
-    try {
-        const feed = await parser.parseURL('https://oswayovalley.com/feed');
-        return feed.items.slice(0, 3);
-    } catch (error) {
-        console.error('Error fetching news:', error);
-        return [];
-    }
-}
+import { getAllNews } from '../app/utils/news';
 
 export default async function NewsFeed() {
-    const newsItems = await getNews();
+    const newsItems = getAllNews().slice(0, 3);
 
     if (newsItems.length === 0) {
         return (
@@ -39,19 +14,14 @@ export default async function NewsFeed() {
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
             {newsItems.map((item, index) => {
-                const date = new Date(item.pubDate).toLocaleDateString('en-US', {
+                const date = new Date(item.date).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
 
-                // Strip HTML tags from contentSnippet or content for summary
-                const summary = item.contentSnippet?.length > 150
-                    ? item.contentSnippet.substring(0, 150) + '...'
-                    : item.contentSnippet || '';
-
                 return (
-                    <div key={index} className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <div key={item.slug} className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <span style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase' }}>
                             {date}
                         </span>
@@ -59,12 +29,10 @@ export default async function NewsFeed() {
                             {item.title}
                         </h3>
                         <p style={{ color: 'var(--text-light)', lineHeight: 1.6, flex: 1, marginBottom: '1.5rem' }}>
-                            {summary}
+                            {item.excerpt}
                         </p>
                         <a
-                            href={item.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href={`/news/${item.slug}`}
                             style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
