@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import RichTextEditor from '../../../../components/RichTextEditor';
 
 export default function NewsEditorPage() {
     const router = useRouter();
@@ -179,25 +180,14 @@ export default function NewsEditorPage() {
 
                 <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-                        Content * (Markdown supported)
+                        Content *
                     </label>
-                    <textarea
-                        value={formData.content}
-                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                        required
-                        rows={15}
-                        style={{
-                            width: '100%',
-                            padding: '0.75rem',
-                            border: '1px solid var(--border)',
-                            borderRadius: '4px',
-                            fontSize: '1rem',
-                            fontFamily: 'monospace',
-                            resize: 'vertical'
-                        }}
+                    <RichTextEditor
+                        content={formData.content}
+                        onChange={(html) => setFormData({ ...formData, content: html })}
                     />
-                    <small style={{ color: 'var(--text-light)' }}>
-                        Use Markdown formatting: **bold**, *italic*, ## headings, - lists, etc.
+                    <small style={{ color: 'var(--text-light)', display: 'block', marginTop: '0.5rem' }}>
+                        Use the toolbar to format text, add images, links, and more
                     </small>
                 </div>
 

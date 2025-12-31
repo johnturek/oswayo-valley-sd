@@ -1,6 +1,4 @@
 import { getNewsItem, getAllNews } from '../../../app/utils/news';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 export async function generateStaticParams() {
     const news = getAllNews();
@@ -56,11 +54,8 @@ export default async function NewsPage({ params }) {
                     lineHeight: 1.7,
                     color: 'var(--text)'
                 }}
-            >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {newsItem.content}
-                </ReactMarkdown>
-            </div>
+                dangerouslySetInnerHTML={{ __html: newsItem.content }}
+            />
 
             <footer style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
                 <a href="/" style={{ color: 'var(--primary)', fontWeight: 600 }}>

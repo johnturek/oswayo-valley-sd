@@ -1,0 +1,11 @@
+{
+    "name": "web",
+    "active": true,
+    "events": [
+        "push"
+    ],
+    "config": {
+        "url": "http://my.turek.in:3000/api/deploy/72lJT6_l2Lqales9tgvBg",
+        "content_type": "json"
+    }
+}
