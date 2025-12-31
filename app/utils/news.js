@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { marked } from 'marked';
 
 const contentDirectory = path.join(process.cwd(), 'content/news');
 
@@ -51,9 +52,14 @@ export function getNewsItem(slug) {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
+    // Detect if content is markdown or HTML
+    // If it doesn't contain HTML tags, convert markdown to HTML
+    const isMarkdown = !content.includes('<p>') && !content.includes('<h');
+    const htmlContent = isMarkdown ? marked(content) : content;
+
     return {
         slug,
-        content,
+        content: htmlContent,
         title: data.title || 'Untitled',
         date: data.date || new Date().toISOString().split('T')[0],
         excerpt: data.excerpt || content.substring(0, 160),
