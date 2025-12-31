@@ -9,6 +9,7 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import YouTube from '@tiptap/extension-youtube';
 import { useCallback, useRef } from 'react';
+import imageCompression from 'browser-image-compression';
 
 export default function RichTextEditor({ content, onChange }) {
     const fileInputRef = useRef(null);
@@ -52,18 +53,43 @@ export default function RichTextEditor({ content, onChange }) {
         fileInputRef.current?.click();
     }, []);
 
-    const handleImageUpload = useCallback((event) => {
+    const handleImageUpload = useCallback(async (event) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const base64 = e.target?.result;
-            if (base64 && editor) {
-                editor.chain().focus().setImage({ src: base64 }).run();
-            }
-        };
-        reader.readAsDataURL(file);
+        try {
+            // Compression options
+            const options = {
+                maxSizeMB: 1, // Max file size in MB
+                maxWidthOrHeight: 1920, // Max width or height
+                useWebWorker: true,
+                fileType: 'image/jpeg', // Convert to JPEG for better compression
+            };
+
+            // Compress the image
+            const compressedFile = await imageCompression(file, options);
+
+            // Convert to base64
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target?.result;
+                if (base64 && editor) {
+                    editor.chain().focus().setImage({ src: base64 }).run();
+                }
+            };
+            reader.readAsDataURL(compressedFile);
+        } catch (error) {
+            console.error('Error compressing image:', error);
+            // Fallback to original file if compression fails
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target?.result;
+                if (base64 && editor) {
+                    editor.chain().focus().setImage({ src: base64 }).run();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     }, [editor]);
 
     const setLink = useCallback(() => {
