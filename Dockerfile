@@ -7,6 +7,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
+# Cache bust: 2025-12-31-v2
 COPY package.json package-lock.json* ./
 RUN npm ci
 
