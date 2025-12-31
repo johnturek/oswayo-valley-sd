@@ -1,0 +1,209 @@
+.container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginCard,
+.card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.card {
+    max-width: 800px;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.statusCard {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.statusTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 1rem;
+}
+
+.statusContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.statusItem {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.statusLabel {
+    font-weight: 600;
+    color: #6b7280;
+    min-width: 80px;
+}
+
+.statusValue {
+    color: #374151;
+}
+
+.statusActive {
+    color: #059669;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.statusInactive {
+    color: #dc2626;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.input,
+.textarea {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    border-color: var(--primary, #4CBB17);
+    box-shadow: 0 0 0 3px rgba(76, 187, 23, 0.1);
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: var(--primary, #4CBB17);
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btnPrimary,
+.btnDanger {
+    padding: 0.875rem 1.75rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    flex: 1;
+}
+
+.btnPrimary {
+    background-color: var(--primary, #4CBB17);
+    color: white;
+}
+
+.btnPrimary:hover {
+    background-color: var(--primary-dark, #3a9112);
+    transform: translateY(-1px);
+}
+
+.btnDanger {
+    background-color: #dc2626;
+    color: white;
+}
+
+.btnDanger:hover {
+    background-color: #b91c1c;
+    transform: translateY(-1px);
+}
+
+.statusMessage {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #dbeafe;
+    color: #1e40af;
+    text-align: center;
+    font-weight: 500;
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .loginCard,
+    .card {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .buttonGroup {
+        flex-direction: column;
+    }
+}

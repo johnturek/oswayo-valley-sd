@@ -1,9 +1,11 @@
 import Hero from '../components/Hero';
 import NewsFeed from '../components/NewsFeed';
+import EmergencyAlert from '../components/EmergencyAlert';
 
 export default function Home() {
     return (
         <div>
+            <EmergencyAlert />
             <Hero />
 
             {/* Additional Content - Quick Access / News Teaser */}
