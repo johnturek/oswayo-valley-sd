@@ -234,3 +234,31 @@ a {
   background: none;
   padding: 0;
 }
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.prose table th,
+.prose table td {
+  border: 1px solid var(--border);
+  padding: 0.75em;
+  text-align: left;
+}
+
+.prose table th {
+  background: var(--background-alt);
+  font-weight: 600;
+}
+
+.prose table tr:nth-child(even) {
+  background: var(--background-alt);
+}
+
+.prose iframe {
+  max-width: 100%;
+  margin: 1.5em 0;
+  border-radius: 8px;
+}

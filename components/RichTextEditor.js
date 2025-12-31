@@ -3,6 +3,11 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import YouTube from '@tiptap/extension-youtube';
 import { useCallback, useRef } from 'react';
 
 export default function RichTextEditor({ content, onChange }) {
@@ -20,6 +25,16 @@ export default function RichTextEditor({ content, onChange }) {
                 HTMLAttributes: {
                     class: 'text-primary underline',
                 },
+            }),
+            Table.configure({
+                resizable: true,
+            }),
+            TableRow,
+            TableHeader,
+            TableCell,
+            YouTube.configure({
+                width: 640,
+                height: 360,
             }),
         ],
         content: content || '',
@@ -63,6 +78,13 @@ export default function RichTextEditor({ content, onChange }) {
         }
 
         editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    }, [editor]);
+
+    const addYouTube = useCallback(() => {
+        const url = window.prompt('Enter YouTube URL');
+        if (url) {
+            editor?.commands.setYouTubeVideo({ src: url });
+        }
     }, [editor]);
 
     if (!editor) {
@@ -167,6 +189,22 @@ export default function RichTextEditor({ content, onChange }) {
                     title="Horizontal Line"
                 >
                     ─ Line
+                </ToolbarButton>
+
+                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
+
+                <ToolbarButton
+                    onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+                    title="Insert Table"
+                >
+                    📊 Table
+                </ToolbarButton>
+
+                <ToolbarButton
+                    onClick={addYouTube}
+                    title="Embed YouTube Video"
+                >
+                    🎥 Video
                 </ToolbarButton>
             </div>
 
