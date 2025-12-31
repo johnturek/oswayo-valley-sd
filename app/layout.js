@@ -1,6 +1,7 @@
 import './globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import EmergencyAlert from '../components/EmergencyAlert';
 
 export const metadata = {
     title: 'Oswayo Valley School District',
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
                     {children}
                 </main>
                 <Footer />
+                <EmergencyAlert />
             </body>
         </html>
     );

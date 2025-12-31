@@ -26,6 +26,7 @@ export default function Header() {
                     <Link href="/high-school" className={styles.navLink}>High School</Link>
                     <Link href="/information" className={styles.navLink}>Information</Link>
                     <Link href="/employment" className={styles.navLink}>Employment</Link>
+                    <Link href="/admin" className={styles.navLink}>Admin</Link>
                     <Link href="https://osvsd.focusschoolsoftware.com/focus/?" target="_blank" className="btn-primary" style={{ marginLeft: '1rem' }}>
                         Student Portal
                     </Link>
@@ -55,6 +56,7 @@ export default function Header() {
                     <Link href="/high-school" className={styles.navLink}>High School</Link>
                     <Link href="/information" className={styles.navLink}>Information</Link>
                     <Link href="/employment" className={styles.navLink}>Employment</Link>
+                    <Link href="/admin" className={styles.navLink}>Admin</Link>
                     <Link href="https://osvsd.focusschoolsoftware.com/focus/?" target="_blank" className={styles.navLink}>Student Portal</Link>
                 </div>
             )}
