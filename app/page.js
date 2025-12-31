@@ -1,6 +1,9 @@
 import Hero from '../components/Hero';
 import NewsFeed from '../components/NewsFeed';
 
+// Force dynamic rendering so news updates show immediately
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
     return (
         <div>
