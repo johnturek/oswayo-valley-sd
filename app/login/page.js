@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '../../lib/pocketbase';
+import { login } from '@/lib/pocketbase';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');

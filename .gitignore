@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local deployment/script files with sensitive info
+projects*.json
+create_*.json
+deploy_*.json
+update_*.json
+redeploy_*.json
+build_logs.json
+setup_cms.mjs

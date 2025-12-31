@@ -1,9 +1,0 @@
-{
-    "applicationId": "S4oeUIpkyN3tPff8hV5Mq",
-    "sourceType": "git",
-    "customGitUrl": "https://github.com/johnturek/oswayo-valley-sd.git",
-    "customGitBranch": "main",
-    "buildType": "dockerfile",
-    "dockerfile": "./Dockerfile",
-    "contextPath": "/"
-}
