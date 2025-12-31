@@ -1,11 +1,7 @@
-import { getNewsItem, getAllNews } from '../../../app/utils/news';
+import { getNewsItem } from '../../../app/utils/news';
 
-export async function generateStaticParams() {
-    const news = getAllNews();
-    return news.map((item) => ({
-        slug: item.slug,
-    }));
-}
+// Force dynamic rendering so news updates show immediately
+export const dynamic = 'force-dynamic';
 
 export default async function NewsPage({ params }) {
     const { slug } = await params;
