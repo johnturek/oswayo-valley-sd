@@ -9,7 +9,7 @@ function readAlert() {
     try {
         const data = fs.readFileSync(ALERT_FILE, 'utf8');
         return JSON.parse(data);
-    } catch (error) {
+    } catch {
         return { message: '', startTime: null, endTime: null, isActive: false };
     }
 }
@@ -34,7 +34,7 @@ export async function GET() {
         }
         
         return NextResponse.json(alert);
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { error: 'Failed to read alert' },
             { status: 500 }
@@ -65,7 +65,7 @@ export async function POST(request) {
         writeAlert(alert);
         
         return NextResponse.json({ success: true, alert });
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { error: 'Failed to save alert' },
             { status: 500 }

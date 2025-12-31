@@ -1,6 +1,6 @@
 {
-  "message": "",
-  "startTime": null,
-  "endTime": null,
-  "isActive": false
+  "message": "SNOW EMERGENCY: Due to severe weather conditions, all schools will be closed today, December 31, 2025. Buses will not run. Stay safe!",
+  "startTime": "2025-12-31T07:00",
+  "endTime": "2025-12-31T18:00",
+  "isActive": true
 }

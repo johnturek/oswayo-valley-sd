@@ -12,10 +12,6 @@ export default function AdminPage() {
     const [statusMessage, setStatusMessage] = useState('');
     const [currentAlert, setCurrentAlert] = useState(null);
 
-    useEffect(() => {
-        fetchCurrentAlert();
-    }, []);
-
     const fetchCurrentAlert = async () => {
         try {
             const response = await fetch('/api/alert');
@@ -27,10 +23,14 @@ export default function AdminPage() {
                 setEndTime(data.endTime || '');
                 setIsActive(data.isActive || false);
             }
-        } catch (error) {
-            console.error('Failed to fetch alert:', error);
+        } catch {
+            // Failed to fetch alert
         }
     };
+
+    useEffect(() => {
+        fetchCurrentAlert();
+    }, []);
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -68,7 +68,7 @@ export default function AdminPage() {
             } else {
                 setStatusMessage(`Error: ${data.error}`);
             }
-        } catch (error) {
+        } catch {
             setStatusMessage('Failed to save alert');
         }
     };
@@ -101,7 +101,7 @@ export default function AdminPage() {
             } else {
                 setStatusMessage(`Error: ${data.error}`);
             }
-        } catch (error) {
+        } catch {
             setStatusMessage('Failed to deactivate alert');
         }
     };

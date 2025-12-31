@@ -6,10 +6,6 @@ export default function EmergencyAlert() {
     const [alert, setAlert] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
 
-    useEffect(() => {
-        checkForAlert();
-    }, []);
-
     const checkForAlert = async () => {
         try {
             const response = await fetch('/api/alert');
@@ -25,10 +21,14 @@ export default function EmergencyAlert() {
                     setIsVisible(true);
                 }
             }
-        } catch (error) {
-            console.error('Failed to fetch alert:', error);
+        } catch {
+            // Failed to fetch alert
         }
     };
+
+    useEffect(() => {
+        checkForAlert();
+    }, []);
 
     const handleClose = () => {
         setIsVisible(false);
