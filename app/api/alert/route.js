@@ -3,24 +3,24 @@ import fs from 'fs';
 import path from 'path';
 
 const ALERT_FILE = path.join(process.cwd(), 'data', 'alert.json');
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'; // Change in production
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'; // CHANGE THIS! Set ADMIN_PASSWORD environment variable
 
-function readAlert() {
+async function readAlert() {
     try {
-        const data = fs.readFileSync(ALERT_FILE, 'utf8');
+        const data = await fs.promises.readFile(ALERT_FILE, 'utf8');
         return JSON.parse(data);
     } catch {
         return { message: '', startTime: null, endTime: null, isActive: false };
     }
 }
 
-function writeAlert(alert) {
-    fs.writeFileSync(ALERT_FILE, JSON.stringify(alert, null, 2));
+async function writeAlert(alert) {
+    await fs.promises.writeFile(ALERT_FILE, JSON.stringify(alert, null, 2));
 }
 
 export async function GET() {
     try {
-        const alert = readAlert();
+        const alert = await readAlert();
         
         // Check if alert is currently active based on time
         if (alert.isActive && alert.startTime && alert.endTime) {
@@ -62,7 +62,7 @@ export async function POST(request) {
             isActive: isActive || false
         };
         
-        writeAlert(alert);
+        await writeAlert(alert);
         
         return NextResponse.json({ success: true, alert });
     } catch {
