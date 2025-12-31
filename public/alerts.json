@@ -1,3 +1,12 @@
 {
-  "alerts": []
+  "alerts": [
+    {
+      "id": "1767163247845",
+      "title": "School Closing - Winter Storm",
+      "message": "Due to heavy snowfall and hazardous road conditions, all schools will be closed today, December 31st, 2025. All after-school activities and evening events are also cancelled. Stay safe!",
+      "type": "emergency",
+      "startTime": "2025-12-31T06:00",
+      "endTime": "2026-01-01T18:00"
+    }
+  ]
 }

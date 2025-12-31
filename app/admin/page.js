@@ -74,7 +74,9 @@ export default function AdminPage() {
     const handleEdit = (alert) => {
         setFormData(alert);
         setIsEditing(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     };
 
     const handleDelete = async (id) => {

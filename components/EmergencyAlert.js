@@ -23,9 +23,16 @@ export default function EmergencyAlert() {
                 // Show the most recent active alert
                 const latestAlert = data.alerts[0];
                 
-                // Check if this alert was already dismissed in this session
-                const dismissedAlerts = JSON.parse(sessionStorage.getItem('dismissedAlerts') || '[]');
-                if (!dismissedAlerts.includes(latestAlert.id)) {
+                // Check if this alert was already dismissed in this session (client-side only)
+                if (typeof window !== 'undefined') {
+                    const dismissedAlerts = JSON.parse(sessionStorage.getItem('dismissedAlerts') || '[]');
+                    if (!dismissedAlerts.includes(latestAlert.id)) {
+                        setAlert(latestAlert);
+                        setIsVisible(true);
+                        setIsDismissed(false);
+                    }
+                } else {
+                    // Server-side: show alert by default
                     setAlert(latestAlert);
                     setIsVisible(true);
                     setIsDismissed(false);
@@ -40,8 +47,8 @@ export default function EmergencyAlert() {
     };
 
     const handleDismiss = () => {
-        if (alert) {
-            // Store dismissed alert ID in session storage
+        if (alert && typeof window !== 'undefined') {
+            // Store dismissed alert ID in session storage (client-side only)
             const dismissedAlerts = JSON.parse(sessionStorage.getItem('dismissedAlerts') || '[]');
             dismissedAlerts.push(alert.id);
             sessionStorage.setItem('dismissedAlerts', JSON.stringify(dismissedAlerts));
