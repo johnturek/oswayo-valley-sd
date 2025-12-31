@@ -1,10 +1,24 @@
 import Parser from 'rss-parser';
 
+import { getNews as getPbNews } from '../lib/pocketbase';
+
 async function getNews() {
+    // 1. Try fetching from PocketBase CMS
+    const pbItems = await getPbNews();
+    if (pbItems && pbItems.length > 0) {
+        return pbItems.map(item => ({
+            title: item.title,
+            pubDate: item.created,
+            contentSnippet: item.excerpt || item.content?.substring(0, 160),
+            link: `/news/${item.id}` // Internal link structure
+        }));
+    }
+
+    // 2. Fallback to RSS if CMS is empty
     const parser = new Parser();
     try {
         const feed = await parser.parseURL('https://oswayovalley.com/feed');
-        return feed.items.slice(0, 3); // Get top 3 items
+        return feed.items.slice(0, 3);
     } catch (error) {
         console.error('Error fetching news:', error);
         return [];
