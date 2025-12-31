@@ -1,26 +1,34 @@
 "use client";
 import React, { useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { login } from '../utils/pocketbase';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const handleLogin = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
-            await login(email, password);
-            router.push('/admin');
+            const result = await signIn('credentials', {
+                username,
+                password,
+                redirect: false,
+            });
+
+            if (result?.error) {
+                setError('Invalid username or password');
+            } else {
+                router.push('/admin');
+            }
         } catch (err) {
-            console.error(err);
-            setError('Invalid email or password.');
+            setError('An error occurred. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -28,55 +36,114 @@ export default function LoginPage() {
 
     return (
         <div style={{
+            minHeight: '100vh',
             display: 'flex',
-            justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '80vh',
-            background: 'var(--background)'
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #4CBB17 0%, #3a9112 100%)',
+            padding: '2rem'
         }}>
-            <div className="card" style={{ maxWidth: '400px', width: '100%', padding: '2rem' }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--primary)' }}>Staff Login</h2>
-                {error && <div style={{ background: '#fee2e2', color: '#dc2626', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
-                <form onSubmit={handleLogin}>
+            <div className="card" style={{
+                maxWidth: '400px',
+                width: '100%',
+                padding: '3rem',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+            }}>
+                <h1 style={{
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    marginBottom: '0.5rem',
+                    textAlign: 'center'
+                }}>
+                    Staff Login
+                </h1>
+                <p style={{
+                    color: 'var(--text-light)',
+                    textAlign: 'center',
+                    marginBottom: '2rem'
+                }}>
+                    Oswayo Valley School District
+                </p>
+
+                {error && (
+                    <div style={{
+                        background: '#fee',
+                        border: '1px solid #fcc',
+                        color: '#c33',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        marginBottom: '1.5rem',
+                        textAlign: 'center'
+                    }}>
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Email</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
+                            Username
+                        </label>
                         <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
                             style={{
                                 width: '100%',
-                                padding: '0.8rem',
+                                padding: '0.75rem',
+                                border: '1px solid var(--border)',
                                 borderRadius: '8px',
-                                border: '1px solid #ccc'
+                                fontSize: '1rem'
                             }}
-                            required
                         />
                     </div>
+
                     <div style={{ marginBottom: '2rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Password</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
+                            Password
+                        </label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                             style={{
                                 width: '100%',
-                                padding: '0.8rem',
+                                padding: '0.75rem',
+                                border: '1px solid var(--border)',
                                 borderRadius: '8px',
-                                border: '1px solid #ccc'
+                                fontSize: '1rem'
                             }}
-                            required
                         />
                     </div>
+
                     <button
                         type="submit"
-                        className="btn-primary"
-                        style={{ width: '100%', opacity: loading ? 0.7 : 1 }}
                         disabled={loading}
+                        className="btn-primary"
+                        style={{
+                            width: '100%',
+                            padding: '1rem',
+                            opacity: loading ? 0.6 : 1
+                        }}
                     >
-                        {loading ? 'Signing In...' : 'Sign In'}
+                        {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                 </form>
+
+                <div style={{
+                    marginTop: '2rem',
+                    padding: '1rem',
+                    background: 'var(--background-alt)',
+                    borderRadius: '8px',
+                    fontSize: '0.875rem',
+                    color: 'var(--text-light)'
+                }}>
+                    <strong>Default credentials:</strong><br />
+                    Username: admin<br />
+                    Password: oswayo2025
+                </div>
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 import './globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import AuthProvider from '../components/AuthProvider';
 
 export const metadata = {
     title: 'Oswayo Valley School District',
@@ -11,11 +12,13 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body>
-                <Header />
-                <main style={{ minHeight: '100vh' }}>
-                    {children}
-                </main>
-                <Footer />
+                <AuthProvider>
+                    <Header />
+                    <main style={{ minHeight: '100vh' }}>
+                        {children}
+                    </main>
+                    <Footer />
+                </AuthProvider>
             </body>
         </html>
     );
