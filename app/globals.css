@@ -134,16 +134,24 @@ a {
 }
 
 /* Prose styling for rich text content */
-.prose {
+.prose,
+.ql-editor {
   max-width: 65ch;
+  margin: 0 auto;
 }
 
 .prose h1,
+.ql-editor h1,
 .prose h2,
+.ql-editor h2,
 .prose h3,
+.ql-editor h3,
 .prose h4,
+.ql-editor h4,
 .prose h5,
-.prose h6 {
+.ql-editor h5,
+.prose h6,
+.ql-editor h6 {
   font-weight: 700;
   line-height: 1.3;
   margin-top: 1.5em;
@@ -159,7 +167,8 @@ a {
   font-size: 1.5em;
 }
 
-.prose p {
+.prose p,
+.ql-editor p {
   margin-bottom: 1.25em;
 }
 
@@ -183,7 +192,9 @@ a {
 }
 
 .prose ul,
-.prose ol {
+.ql-editor ul,
+.prose ol,
+.ql-editor ol {
   margin-bottom: 1.25em;
   padding-left: 1.5em;
 }
@@ -261,4 +272,31 @@ a {
   max-width: 100%;
   margin: 1.5em 0;
   border-radius: 8px;
+}
+
+/* Quill-specific content styling */
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-right {
+  text-align: right;
+}
+
+.ql-align-justify {
+  text-align: justify;
+}
+
+.ql-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  margin: 1.5em 0;
+}
+
+.prose img,
+.ql-editor img {
+  display: block;
+  max-width: 100%;
+  margin: 1.5rem auto;
 }

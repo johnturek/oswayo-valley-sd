@@ -1,55 +1,18 @@
 "use client";
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
-import { TableCell } from '@tiptap/extension-table-cell';
-import { TableHeader } from '@tiptap/extension-table-header';
-import YouTube from '@tiptap/extension-youtube';
-import { useCallback, useRef } from 'react';
+import { useMemo, useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import imageCompression from 'browser-image-compression';
+import 'react-quill/dist/quill.snow.css';
+
+// Dynamically import ReactQuill to avoid SSR issues
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function RichTextEditor({ content, onChange }) {
+    const quillRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Image.configure({
-                inline: true,
-                allowBase64: true,
-            }),
-            Link.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    class: 'text-primary underline',
-                },
-            }),
-            Table.configure({
-                resizable: true,
-            }),
-            TableRow,
-            TableHeader,
-            TableCell,
-            YouTube.configure({
-                width: 640,
-                height: 360,
-            }),
-        ],
-        content: content || '',
-        onUpdate: ({ editor }) => {
-            onChange(editor.getHTML());
-        },
-        editorProps: {
-            attributes: {
-                class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none min-h-[300px] p-4',
-            },
-        },
-    });
-
-    const addImage = useCallback(() => {
+    // Image upload handler with compression
+    const imageHandler = useCallback(() => {
         fileInputRef.current?.click();
     }, []);
 
@@ -57,13 +20,16 @@ export default function RichTextEditor({ content, onChange }) {
         const file = event.target.files?.[0];
         if (!file) return;
 
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+
         try {
             // Compression options
             const options = {
-                maxSizeMB: 1, // Max file size in MB
-                maxWidthOrHeight: 1920, // Max width or height
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
                 useWebWorker: true,
-                fileType: 'image/jpeg', // Convert to JPEG for better compression
+                fileType: 'image/jpeg',
             };
 
             // Compress the image
@@ -73,171 +39,111 @@ export default function RichTextEditor({ content, onChange }) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const base64 = e.target?.result;
-                if (base64 && editor) {
-                    editor.chain().focus().setImage({ src: base64 }).run();
+                if (base64) {
+                    const range = quill.getSelection(true);
+                    quill.insertEmbed(range.index, 'image', base64);
+                    quill.setSelection(range.index + 1);
                 }
             };
             reader.readAsDataURL(compressedFile);
         } catch (error) {
             console.error('Error compressing image:', error);
-            // Fallback to original file if compression fails
+            // Fallback to original file
             const reader = new FileReader();
             reader.onload = (e) => {
                 const base64 = e.target?.result;
-                if (base64 && editor) {
-                    editor.chain().focus().setImage({ src: base64 }).run();
+                if (base64) {
+                    const range = quill.getSelection(true);
+                    quill.insertEmbed(range.index, 'image', base64);
+                    quill.setSelection(range.index + 1);
                 }
             };
             reader.readAsDataURL(file);
         }
-    }, [editor]);
 
-    const setLink = useCallback(() => {
-        const previousUrl = editor?.getAttributes('link').href;
-        const url = window.prompt('URL', previousUrl);
+        // Reset file input
+        event.target.value = '';
+    }, []);
 
-        if (url === null) return;
+    // YouTube video handler
+    const videoHandler = useCallback(() => {
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
 
-        if (url === '') {
-            editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+        const url = prompt('Enter YouTube URL:');
+        if (!url) return;
+
+        // Extract video ID from various YouTube URL formats
+        let videoId = '';
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+
+        if (match && match[2].length === 11) {
+            videoId = match[2];
+        } else {
+            alert('Invalid YouTube URL');
             return;
         }
 
-        editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    }, [editor]);
+        const range = quill.getSelection(true);
+        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
-    const addYouTube = useCallback(() => {
-        const url = window.prompt('Enter YouTube URL');
-        if (url) {
-            editor?.commands.setYouTubeVideo({ src: url });
+        // Insert iframe for YouTube video
+        const iframe = `<iframe width="560" height="315" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        quill.clipboard.dangerouslyPasteHTML(range.index, iframe);
+        quill.setSelection(range.index + 1);
+    }, []);
+
+    // Quill modules configuration
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: [
+                [{ 'header': [2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['link', 'image', 'video'],
+                ['blockquote', 'code-block'],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler,
+                video: videoHandler,
+            }
+        },
+        clipboard: {
+            matchVisual: false,
         }
-    }, [editor]);
+    }), [imageHandler, videoHandler]);
 
-    if (!editor) {
-        return null;
-    }
+    // Quill formats
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike',
+        'list', 'bullet',
+        'align',
+        'link', 'image', 'video',
+        'blockquote', 'code-block',
+        'color', 'background'
+    ];
 
     return (
-        <div style={{ border: '1px solid var(--border)', borderRadius: '8px', overflow: 'hidden' }}>
-            {/* Toolbar */}
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '0.25rem',
-                padding: '0.75rem',
-                borderBottom: '1px solid var(--border)',
-                background: 'var(--background)'
-            }}>
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleBold().run()}
-                    active={editor.isActive('bold')}
-                    title="Bold"
-                >
-                    <strong>B</strong>
-                </ToolbarButton>
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleItalic().run()}
-                    active={editor.isActive('italic')}
-                    title="Italic"
-                >
-                    <em>I</em>
-                </ToolbarButton>
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleStrike().run()}
-                    active={editor.isActive('strike')}
-                    title="Strikethrough"
-                >
-                    <s>S</s>
-                </ToolbarButton>
+        <div style={{ position: 'relative' }}>
+            <ReactQuill
+                ref={quillRef}
+                theme="snow"
+                value={content || ''}
+                onChange={onChange}
+                modules={modules}
+                formats={formats}
+                style={{
+                    minHeight: '400px',
+                    background: 'white',
+                }}
+            />
 
-                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    active={editor.isActive('heading', { level: 2 })}
-                    title="Heading 2"
-                >
-                    H2
-                </ToolbarButton>
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                    active={editor.isActive('heading', { level: 3 })}
-                    title="Heading 3"
-                >
-                    H3
-                </ToolbarButton>
-
-                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleBulletList().run()}
-                    active={editor.isActive('bulletList')}
-                    title="Bullet List"
-                >
-                    • List
-                </ToolbarButton>
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                    active={editor.isActive('orderedList')}
-                    title="Numbered List"
-                >
-                    1. List
-                </ToolbarButton>
-
-                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-
-                <ToolbarButton
-                    onClick={setLink}
-                    active={editor.isActive('link')}
-                    title="Add Link"
-                >
-                    🔗 Link
-                </ToolbarButton>
-
-                <ToolbarButton
-                    onClick={addImage}
-                    title="Insert Image"
-                >
-                    🖼️ Image
-                </ToolbarButton>
-
-                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                    active={editor.isActive('blockquote')}
-                    title="Quote"
-                >
-                    " Quote
-                </ToolbarButton>
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().setHorizontalRule().run()}
-                    title="Horizontal Line"
-                >
-                    ─ Line
-                </ToolbarButton>
-
-                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-
-                <ToolbarButton
-                    onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
-                    title="Insert Table"
-                >
-                    📊 Table
-                </ToolbarButton>
-
-                <ToolbarButton
-                    onClick={addYouTube}
-                    title="Embed YouTube Video"
-                >
-                    🎥 Video
-                </ToolbarButton>
-            </div>
-
-            {/* Editor */}
-            <EditorContent editor={editor} />
-
-            {/* Hidden file input */}
+            {/* Hidden file input for image uploads */}
             <input
                 ref={fileInputRef}
                 type="file"
@@ -246,38 +152,5 @@ export default function RichTextEditor({ content, onChange }) {
                 style={{ display: 'none' }}
             />
         </div>
-    );
-}
-
-function ToolbarButton({ onClick, active, title, children }) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            title={title}
-            style={{
-                padding: '0.5rem 0.75rem',
-                border: '1px solid var(--border)',
-                borderRadius: '4px',
-                background: active ? 'var(--primary)' : 'white',
-                color: active ? 'white' : 'var(--text)',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: active ? 600 : 400,
-                transition: 'all 0.2s'
-            }}
-            onMouseEnter={(e) => {
-                if (!active) {
-                    e.currentTarget.style.background = 'var(--background)';
-                }
-            }}
-            onMouseLeave={(e) => {
-                if (!active) {
-                    e.currentTarget.style.background = 'white';
-                }
-            }}
-        >
-            {children}
-        </button>
     );
 }
